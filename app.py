@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from Server.extensions import db, migrate
 import os
 
@@ -25,7 +25,7 @@ def create_app():
     # Simple root endpoint
     @app.get('/')
     def index():
-        return {"message": "Access Camp API up. Endpoints: /campers, /activities, /signups"}
+        return jsonify({"message": "Welcome to the Access Camp API up. Endpoints: /campers, /activities, /signups"})
 
     return app
 

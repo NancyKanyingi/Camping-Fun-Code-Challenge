@@ -1,43 +1,55 @@
-from app import app, db
-from models import Camper, Activity, Signup
+# Server/seed.py
+from Server.extensions import db
+from Server.models import Camper, Activity, Signup
+from faker import Faker
+import random
+from Server.app import create_app
 
+fake = Faker()
 
+app = create_app()
 
-
-def seed():
 with app.app_context():
-db.create_all()
+    print("Clearing existing data...")
+    db.session.query(Signup).delete()
+    db.session.query(Activity).delete()
+    db.session.query(Camper).delete()
 
+    print("Seeding campers...")
+    campers = []
+    for _ in range(10):
+        camper = Camper(
+            name=fake.first_name(),
+            age=random.randint(8, 18)
+        )
+        db.session.add(camper)
+        campers.append(camper)
 
-# Clear existing
-Signup.query.delete()
-Camper.query.delete()
-Activity.query.delete()
-db.session.commit()
+    print("Seeding activities...")
+    activities = []
+    activity_names = [
+        "Archery", "Swimming", "Hiking by the Stream",
+        "Canoeing", "Fishing", "Arts & Crafts",
+        "Rock Climbing", "Campfire Songs", "Nature Walks"
+    ]
+    for name in activity_names:
+        activity = Activity(
+            name=name,
+            difficulty=random.randint(1, 5)
+        )
+        db.session.add(activity)
+        activities.append(activity)
 
+    db.session.commit()
 
-c1 = Camper(name='Caitlin', age=8)
-c2 = Camper(name='Lizzie', age=9)
+    print("Seeding signups...")
+    for _ in range(20):
+        signup = Signup(
+            camper_id=random.choice(campers).id,
+            activity_id=random.choice(activities).id,
+            time=random.randint(0, 23)
+        )
+        db.session.add(signup)
 
-
-a1 = Activity(name='Archery', difficulty=2)
-a2 = Activity(name='Swimming', difficulty=3)
-
-
-db.session.add_all([c1, c2, a1, a2])
-db.session.commit()
-
-
-s1 = Signup(camper_id=c1.id, activity_id=a1.id, time=9)
-s2 = Signup(camper_id=c2.id, activity_id=a2.id, time=10)
-
-
-db.session.add_all([s1, s2])
-db.session.commit()
-print('Seeded DB with sample campers, activities, and signups')
-
-
-
-
-if __name__ == '__main__':
-seed()
+    db.session.commit()
+    print(" Done seeding!")

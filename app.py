@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from Server.extensions import db, migrate
+from .extensions import db, migrate
 import os
 
 def create_app():
@@ -16,10 +16,10 @@ def create_app():
     migrate.init_app(app, db)
 
     # Import models so SQLAlchemy knows them
-    from Server.models import Camper, Activity, Signup  # noqa: E402
+    from .models import Camper, Activity, Signup  # noqa: E402
 
     # Register routes (make sure routes.py exists in the same folder)
-    from Server.routes import bp as api_bp  # noqa: E402
+    from .routes import bp as api_bp  # noqa: E402
     app.register_blueprint(api_bp)
 
     # Simple root endpoint

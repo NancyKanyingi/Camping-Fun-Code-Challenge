@@ -1,7 +1,7 @@
 # routes.py
 from flask import Blueprint, request, jsonify
-from extensions import db
-from models import Camper, Activity, Signup
+from Server.extensions import db
+from Server.models import Camper, Activity, Signup
 
 bp = Blueprint('api', __name__)
 

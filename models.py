@@ -1,13 +1,17 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
-from extensions import db
+from Server.extensions import db
 # Create db instance here
 
 class Camper(db.Model):
     __tablename__ = 'campers'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"<Camper {self.name}>"
 
     signups = db.relationship('Signup', back_populates='camper', cascade='all, delete-orphan')
     activities = db.relationship('Activity', secondary='signups', back_populates='campers')

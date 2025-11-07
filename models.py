@@ -85,3 +85,14 @@ class Signup(db.Model):
         if include_nested_activity:
             base["activity"] = self.activity.to_dict()
         return base
+
+
+def handle_validation_errors(f):
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"errors": [str(e)]}), 400
+    return wrapper
+

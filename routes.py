@@ -23,7 +23,6 @@ def get_camper(id):
     return jsonify(camper.to_dict(include_signups=True)), 200
 
 @bp.post('/campers')
-@bp.post('/campers')
 def create_camper():
     data = request.get_json()
     name = data.get('name')
@@ -40,6 +39,7 @@ def create_camper():
 
 
 @bp.patch('/campers/<int:id>')
+@handle_validation_errors
 def update_camper(id):
     camper = Camper.query.get(id)
     if not camper:

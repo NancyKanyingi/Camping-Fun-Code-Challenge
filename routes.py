@@ -1,7 +1,8 @@
 # routes.py
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, Response
+import json
 from .extensions import db
-from .models import Camper, Activity, Signup
+from .models import Camper, Activity, Signup, handle_validation_errors
 
 bp = Blueprint('api', __name__)
 
@@ -13,7 +14,8 @@ def validation_error_response(messages):
 @bp.get('/campers')
 def list_campers():
     campers = Camper.query.all()
-    return jsonify([c.to_dict() for c in campers]), 200
+    data = [c.to_dict() for c in campers]
+    return Response(json.dumps(data, indent=4), mimetype='application/json'), 200
 
 @bp.get('/campers/<int:id>')
 def get_camper(id):
@@ -62,7 +64,8 @@ def update_camper(id):
 @bp.get('/activities')
 def list_activities():
     activities = Activity.query.all()
-    return jsonify([a.to_dict() for a in activities]), 200
+    data = [a.to_dict() for a in activities]
+    return Response(json.dumps(data, indent=4), mimetype='application/json'), 200
 
 @bp.get('/activities/<int:id>')
 def get_activity(id):
@@ -101,7 +104,8 @@ def delete_activity(id):
 @bp.get('/signups')
 def list_signups():
     signups = Signup.query.all()
-    return jsonify([s.to_dict(include_nested_activity=True) for s in signups]), 200
+    data = [s.to_dict(include_nested_activity=True) for s in signups]
+    return Response(json.dumps(data, indent=4), mimetype='application/json'), 200
 
 @bp.post('/signups')
 def create_signup():
